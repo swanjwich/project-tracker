@@ -11,6 +11,13 @@ const priorityStyles = {
     High: 'bg-red-50 text-red-700 ring-red-200',
 };
 
+// Left border colour so urgent work stands out when scanning the list.
+export const priorityStripe = {
+    Low: 'border-l-transparent',
+    Medium: 'border-l-orange-400',
+    High: 'border-l-red-500',
+};
+
 function Badge({ className, children }) {
     return (
         <span

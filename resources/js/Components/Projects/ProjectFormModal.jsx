@@ -6,8 +6,9 @@ import SecondaryButton from '@/Components/SecondaryButton';
 import TextInput from '@/Components/TextInput';
 import { createProject, updateProject, validationErrors } from '@/api/projects';
 import { useEffect, useState } from 'react';
+import SelectInput from './SelectInput';
 
-const fieldClass =
+const textareaClass =
     'mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500';
 
 const emptyForm = {
@@ -120,28 +121,28 @@ export default function ProjectFormModal({ show, project, statuses, priorities, 
                             rows={3}
                             value={form.description}
                             onChange={set('description')}
-                            className={fieldClass}
+                            className={textareaClass}
                         />
                         <InputError message={errors.description} className="mt-1" />
                     </div>
 
                     <div>
                         <InputLabel htmlFor="status" value="Status" />
-                        <select id="status" value={form.status} onChange={set('status')} className={fieldClass}>
+                        <SelectInput id="status" value={form.status} onChange={set('status')} className="mt-1 block w-full">
                             {statuses.map((s) => (
                                 <option key={s} value={s}>{s}</option>
                             ))}
-                        </select>
+                        </SelectInput>
                         <InputError message={errors.status} className="mt-1" />
                     </div>
 
                     <div>
                         <InputLabel htmlFor="priority" value="Priority" />
-                        <select id="priority" value={form.priority} onChange={set('priority')} className={fieldClass}>
+                        <SelectInput id="priority" value={form.priority} onChange={set('priority')} className="mt-1 block w-full">
                             {priorities.map((p) => (
                                 <option key={p} value={p}>{p}</option>
                             ))}
-                        </select>
+                        </SelectInput>
                         <InputError message={errors.priority} className="mt-1" />
                     </div>
 

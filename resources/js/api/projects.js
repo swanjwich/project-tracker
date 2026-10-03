@@ -5,8 +5,8 @@ const client = axios.create({
     headers: { Accept: 'application/json' },
 });
 
-export const getProjects = () =>
-    client.get('/projects').then((res) => res.data.data);
+export const getProjects = (params = {}) =>
+    client.get('/projects', {params}).then((res) => res.data);
 
 export const createProject = (data) =>
     client.post('/projects', data).then((res) => res.data.data);

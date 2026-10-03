@@ -60,6 +60,11 @@ class Project extends Model
             );
         }
 
+        // Projects without a date go last in either direction, not first.
+        if (in_array($column, ['start_date', 'due_date'])) {
+            $query->orderByRaw("{$column} IS NULL");
+        }
+
         return $query->orderBy($column, $direction);
     }
 }
