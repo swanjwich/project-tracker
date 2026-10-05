@@ -1,59 +1,264 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Client Project Tracker
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A web app for a digital agency's project managers to track client projects, monitor progress, and manage priorities.
 
-## About Laravel
+It has a REST API built with Laravel and a React frontend that uses it. You can create, edit, delete, search, filter and sort projects, and see at a glance what is in progress, on hold, overdue or completed.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+![Projects page](docs/screenshot.png)
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Features
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+**Core requirements**
 
-## Learning Laravel
+- REST API with full CRUD for projects
+- Project list showing client, status, priority and dates
+- Create and edit projects in a modal form, with validation errors shown under each field
+- Delete with a confirmation step
+- Validation for every required rule, with meaningful JSON error responses
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+**Bonus features**
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+- **Search** by client or project name
+- **Filtering** by status and priority, plus an "overdue" filter
+- **Sorting** by due date, priority (Low < Medium < High) or newest
+- **Authentication**: register, log in, log out, password reset and a profile page. The projects page and the API both require login.
+- **Tests** written with Pest
 
-## Laravel Sponsors
+**Extra details**
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+- Summary cards (In Progress / On Hold / Overdue / Completed). Clicking a card filters the list.
+- Due dates shown as "3 days overdue", "Due today" or "In 5 days", in red or amber where they need attention
+- A coloured stripe on each row for priority
+- Responsive: a table on desktop and stacked cards on mobile
+- Loading, empty, "no results" and error states
 
-### Premium Partners
+## Tech stack
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+| Layer    | Technology                                       |
+| -------- | ------------------------------------------------ |
+| Backend  | Laravel 12 (PHP 8.2+)                            |
+| Frontend | React 18, Inertia.js, Tailwind CSS, Headless UI  |
+| Database | MySQL                                            |
+| Auth     | Laravel Breeze + Sanctum (session-based SPA auth) |
+| Tests    | Pest                                             |
 
-## Contributing
+## Getting started
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### Requirements
 
-## Code of Conduct
+- PHP 8.2 or newer, and Composer
+- Node.js 18 or newer, and npm
+- MySQL 8 (or MariaDB)
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### Setup
 
-## Security Vulnerabilities
+```bash
+# 1. Clone and install dependencies
+git clone <repository-url> project-tracker
+cd project-tracker
+composer install
+npm install
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+# 2. Configure the environment
+cp .env.example .env
+php artisan key:generate
+```
 
-## License
+Create an empty MySQL database called `project_tracker`. If your MySQL username or password is not `root` with no password, change `DB_USERNAME` and `DB_PASSWORD` in `.env`.
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+```bash
+# 3. Create the tables and load sample data (a test user and 15 projects)
+php artisan migrate --seed
+
+# 4. Build the frontend and start the server
+npm run build
+php artisan serve
+```
+
+Open **http://127.0.0.1:8000** and log in with the seeded test account:
+
+| Email              | Password   |
+| ------------------ | ---------- |
+| `test@example.com` | `password` |
+
+You can also register a new account from the login page.
+
+### Development
+
+To have frontend changes show up without rebuilding, run Vite's dev server alongside Laravel:
+
+```bash
+php artisan serve
+npm run dev
+```
+
+### Running tests
+
+```bash
+php artisan test
+```
+
+Tests use an in-memory SQLite database, so they don't touch your MySQL data.
+
+> **Using a different port or host?** The frontend calls the API using the browser's login session. That only works for hosts listed in `SANCTUM_STATEFUL_DOMAINS` in `.env`, which by default covers `localhost` and `127.0.0.1` on ports 8000 and 8080. If you serve the app anywhere else, add that host and port to the list, then run `php artisan config:clear`.
+
+## API reference
+
+All endpoints are under `/api` and need an authenticated session; otherwise they return `401`. Send `Accept: application/json`.
+
+The easiest way to try the GET endpoints is to log in to the app, then open them in the same browser, e.g. http://127.0.0.1:8000/api/projects?status=On%20Hold.
+
+| Method   | Endpoint             | Description          | Success |
+| -------- | -------------------- | -------------------- | ------- |
+| `GET`    | `/api/projects`      | List projects        | `200`   |
+| `GET`    | `/api/projects/{id}` | Get one project      | `200`   |
+| `POST`   | `/api/projects`      | Create a project     | `201`   |
+| `PUT`    | `/api/projects/{id}` | Update a project     | `200`   |
+| `DELETE` | `/api/projects/{id}` | Delete a project     | `204`   |
+
+> The brief lists `/projects`. The endpoints use Laravel's standard `/api` prefix so they stay separate from the web pages. `/projects` is the page that shows the UI.
+
+### Project fields
+
+| Field          | Type   | Rules                                                        |
+| -------------- | ------ | ------------------------------------------------------------ |
+| `client_name`  | string | **Required**, max 255                                        |
+| `project_name` | string | **Required**, max 255                                        |
+| `description`  | string | Optional                                                     |
+| `status`       | string | **Required**, one of `Planning`, `In Progress`, `On Hold`, `Completed` |
+| `priority`     | string | **Required**, one of `Low`, `Medium`, `High`                 |
+| `start_date`   | date   | Optional, `YYYY-MM-DD`                                       |
+| `due_date`     | date   | Optional, `YYYY-MM-DD`, **cannot be earlier than `start_date`** |
+
+### List query parameters
+
+`GET /api/projects` accepts these optional parameters, and you can combine them:
+
+| Parameter  | Example                  | Description                                            |
+| ---------- | ------------------------ | ------------------------------------------------------ |
+| `search`   | `?search=acme`           | Matches client name or project name                    |
+| `status`   | `?status=In Progress`    | Only projects with this status                         |
+| `priority` | `?priority=High`         | Only projects with this priority                       |
+| `overdue`  | `?overdue=1`             | Past due date and not completed                        |
+| `sort`     | `?sort=-priority`        | `due_date`, `start_date`, `priority`, `created_at`. Prefix with `-` for descending. Default: `-created_at` |
+
+Invalid values, such as `?status=Done` or `?sort=password`, return `422`.
+
+### Example: create a project
+
+```http
+POST /api/projects
+Content-Type: application/json
+Accept: application/json
+
+{
+  "client_name": "Acme Corp",
+  "project_name": "Website Redesign",
+  "description": "Full redesign of the marketing site",
+  "status": "In Progress",
+  "priority": "High",
+  "start_date": "2026-10-01",
+  "due_date": "2026-12-15"
+}
+```
+
+`201 Created`
+
+```json
+{
+  "data": {
+    "id": 16,
+    "client_name": "Acme Corp",
+    "project_name": "Website Redesign",
+    "description": "Full redesign of the marketing site",
+    "status": "In Progress",
+    "priority": "High",
+    "start_date": "2026-10-01",
+    "due_date": "2026-12-15",
+    "created_at": "2026-10-05T08:30:00.000000Z",
+    "updated_at": "2026-10-05T08:30:00.000000Z"
+  }
+}
+```
+
+The list endpoint also returns `meta.counts` (`in_progress`, `on_hold`, `overdue`, `completed`). These are always counted across **all** projects, not the filtered list, so the summary cards stay stable while you filter.
+
+### Errors
+
+**Validation failed** → `422 Unprocessable Content`
+
+```json
+{
+  "message": "The client name field is required. (and 1 more error)",
+  "errors": {
+    "client_name": ["The client name field is required."],
+    "due_date": ["Due date cannot be earlier than start date."]
+  }
+}
+```
+
+**Project not found** → `404 Not Found`
+
+```json
+{ "message": "Resource not found." }
+```
+
+**Not logged in** → `401 Unauthorized`
+
+```json
+{ "message": "Unauthenticated." }
+```
+
+## Project structure
+
+```
+app/
+├── Enums/ProjectStatus.php, ProjectPriority.php   # Allowed values, one source of truth
+├── Http/
+│   ├── Controllers/ProjectController.php          # CRUD + list filters
+│   ├── Requests/StoreProjectRequest.php           # Validation rules and messages
+│   └── Resources/ProjectResource.php              # JSON shape of a project
+└── Models/Project.php                             # Casts + query scopes (search, overdue, sortBy)
+
+resources/js/
+├── api/projects.js                                # Axios client for the REST API
+├── Pages/Projects/Index.jsx                       # Page: state, filters, data loading
+└── Components/Projects/
+    ├── SummaryCards.jsx                           # Status counts / quick filters
+    ├── ProjectToolbar.jsx                         # Search, filters, sort
+    ├── ProjectTable.jsx, ProjectCards.jsx         # Desktop table / mobile cards
+    ├── ProjectFormModal.jsx                       # Create + edit form
+    ├── DeleteProjectModal.jsx                     # Delete confirmation
+    └── Badges.jsx, ProjectActions.jsx, dates.js   # Small shared pieces
+```
+
+## Technical decisions
+
+**Status and priority are PHP enums, not lookup tables.**
+They are fixed values from the brief, and the app's logic depends on them: badge colours, the priority sort order, the overdue rule. Storing them as strings backed by enums keeps them in one place. Validation (`Rule::enum`), model casting and the frontend dropdowns all read from the same enum. Lookup tables would make sense if admins needed to add or rename statuses.
+
+**The frontend talks to the REST API, not Inertia props.**
+Inertia is used for routing, the layout and auth pages. Project data is always loaded and saved through `/api/projects` with Axios, so the UI really uses the API the brief asks for, and any other client could do the same.
+
+**Filtering, search and sorting run on the server.**
+The API supports them as query parameters, so they would still work with thousands of projects or with a different client. Query parameters are validated and `sort` is checked against a fixed list, so user input never reaches `ORDER BY` directly.
+
+**Session-based API auth with Sanctum.**
+The React frontend runs on the same domain, so it uses the normal Laravel login session (cookie and CSRF protection) instead of API tokens. That means no tokens stored in the browser. If the session expires, the frontend reloads and Laravel sends the user to the login page.
+
+**Projects are shared by all logged-in users.**
+In an agency, project managers usually work on the same set of client projects, so projects are not owned by individual users. Per-user ownership or roles would be a straightforward next step (see below).
+
+**Duplicate project names are allowed.**
+The brief doesn't require unique names, and a client can reasonably have two projects with the same name, e.g. a yearly campaign.
+
+**Small, focused components.**
+The page component manages state and data loading. Each UI piece (toolbar, table, cards, modals) receives data and callbacks as props. Date logic like "3 days overdue" lives in one helper that both the table and the mobile cards use.
+
+## What I'd do with more time
+
+- More API feature tests covering every validation rule, filter and sort option
+- Pagination for the project list
+- Roles and permissions (e.g. only managers can delete), or assigning projects to users
+- A Kanban board view grouped by status
+- Docker setup (Laravel Sail) and a deployed demo
