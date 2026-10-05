@@ -6,7 +6,7 @@ It has a REST API built with Laravel and a React frontend that uses it. You can 
 
 ![Projects page](docs/screenshot.png)
 
-## Features
+## Features Implemented
 
 **Core requirements**
 
@@ -42,7 +42,7 @@ It has a REST API built with Laravel and a React frontend that uses it. You can 
 | Auth     | Laravel Breeze + Sanctum (session-based SPA auth) |
 | Tests    | Pest                                             |
 
-## Getting started
+## Setup Instructions
 
 ### Requirements
 
@@ -232,6 +232,20 @@ resources/js/
     └── Badges.jsx, ProjectActions.jsx, dates.js   # Small shared pieces
 ```
 
+## Assumptions Made
+
+- **REQUIREMENTS.md is the spec.** The assessment overview describes a "Task Management application", but REQUIREMENTS.md describes a Client Project Tracker in detail. I followed REQUIREMENTS.md, so a "task" here is a client project.
+- **Projects are shared by the team.** Every logged-in user can view and manage all projects. There is no ownership or roles.
+- **Only some fields are required.** Client name, project name, status and priority are required. Description, start date and due date are optional, since a project in "Planning" may not have dates yet.
+- **The date rule applies when both dates are set.** "Due date cannot be earlier than start date" is checked only when both are filled in. A due date on its own is allowed, and a due date on the same day as the start date is valid.
+- **New projects default to "Planning" and "Medium"** in the form. The API still requires both values to be sent explicitly.
+- **A project is overdue** when its due date is before today and its status is not "Completed". Completed projects are never shown as overdue.
+- **Duplicate project names are allowed**, even for the same client. The brief doesn't require uniqueness, and a client could have, for example, a yearly campaign with the same name.
+- **Deleting is permanent.** There is no soft delete or archive. The UI asks for confirmation first.
+- **The API lives under `/api`.** The brief lists `/projects`. Laravel's standard `/api` prefix keeps the API separate from the web page at `/projects`.
+- **No pagination.** An agency's active project list is expected to stay small enough to load at once. Pagination is listed under "What I'd do with more time".
+- **The API is used by this app's own frontend**, so it uses session (cookie) authentication rather than issuing API tokens to third-party clients.
+
 ## Technical decisions
 
 **Status and priority are PHP enums, not lookup tables.**
@@ -246,14 +260,16 @@ The API supports them as query parameters, so they would still work with thousan
 **Session-based API auth with Sanctum.**
 The React frontend runs on the same domain, so it uses the normal Laravel login session (cookie and CSRF protection) instead of API tokens. That means no tokens stored in the browser. If the session expires, the frontend reloads and Laravel sends the user to the login page.
 
-**Projects are shared by all logged-in users.**
-In an agency, project managers usually work on the same set of client projects, so projects are not owned by individual users. Per-user ownership or roles would be a straightforward next step (see below).
-
-**Duplicate project names are allowed.**
-The brief doesn't require unique names, and a client can reasonably have two projects with the same name, e.g. a yearly campaign.
-
 **Small, focused components.**
 The page component manages state and data loading. Each UI piece (toolbar, table, cards, modals) receives data and callbacks as props. Date logic like "3 days overdue" lives in one helper that both the table and the mobile cards use.
+
+## AI Tools Used
+
+I used **Claude (Anthropic)** as a coding assistant throughout this project, through Claude Code.
+
+- **How I used it:** discussing design choices (e.g. enums vs. lookup tables for status and priority), generating and reviewing code for the API and React components, debugging issues (e.g. Sanctum session auth returning 401 on a non-default port), and drafting this README.
+- **What I did myself:** I set up the project (Laravel 12, Breeze, React, Inertia), wrote the migration, model and validation request following the discussion, and decided which suggestions to keep or reject. For example, I rejected a uniqueness rule on project names because the requirements don't ask for it. I tested the app manually and committed the work in small steps.
+- **How I checked AI output:** I read and ran all generated code, checked it against the requirements, ran the test suite, and tested the UI in the browser before committing.
 
 ## What I'd do with more time
 
