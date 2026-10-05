@@ -18,11 +18,11 @@ class ProjectController extends Controller
     public function index(Request $request)
     {
         $filters = $request->validate([
-            'search'   => ['nullable', 'string', 'max:100'],
-            'status'   => ['nullable', Rule::enum(ProjectStatus::class)],
+            'search' => ['nullable', 'string', 'max:100'],
+            'status' => ['nullable', Rule::enum(ProjectStatus::class)],
             'priority' => ['nullable', Rule::enum(ProjectPriority::class)],
-            'overdue'  => ['nullable', 'boolean'],
-            'sort'     => ['nullable', Rule::in([
+            'overdue' => ['nullable', 'boolean'],
+            'sort' => ['nullable', Rule::in([
                 'due_date',
                 '-due_date',
                 'start_date',
@@ -36,9 +36,9 @@ class ProjectController extends Controller
 
         $projects = Project::query()
             ->search($filters['search'] ?? null)
-            ->when($filters['status'] ?? null, fn($q, $s) => $q->where('status', $s))
-            ->when($filters['priority'] ?? null, fn($q, $p) => $q->where('priority', $p))
-            ->when($request->boolean('overdue'), fn($q) => $q->overdue())
+            ->when($filters['status'] ?? null, fn ($q, $s) => $q->where('status', $s))
+            ->when($filters['priority'] ?? null, fn ($q, $p) => $q->where('priority', $p))
+            ->when($request->boolean('overdue'), fn ($q) => $q->overdue())
             ->sortBy($filters['sort'] ?? null)
             ->get();
 
@@ -55,9 +55,9 @@ class ProjectController extends Controller
 
         return [
             'in_progress' => $byStatus['In Progress'] ?? 0,
-            'on_hold'     => $byStatus['On Hold'] ?? 0,
-            'completed'   => $byStatus['Completed'] ?? 0,
-            'overdue'     => Project::overdue()->count(),
+            'on_hold' => $byStatus['On Hold'] ?? 0,
+            'completed' => $byStatus['Completed'] ?? 0,
+            'overdue' => Project::overdue()->count(),
         ];
     }
 
@@ -70,6 +70,7 @@ class ProjectController extends Controller
 
         return (new ProjectResource($project))->response()->setStatusCode(201);
     }
+
     /**
      * Display the specified resource.
      */
@@ -87,7 +88,6 @@ class ProjectController extends Controller
 
         return new ProjectResource($project);
     }
-
 
     /**
      * Remove the specified resource from storage.

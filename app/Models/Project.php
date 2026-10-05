@@ -4,13 +4,14 @@ namespace App\Models;
 
 use App\Enums\ProjectPriority;
 use App\Enums\ProjectStatus;
+use Database\Factories\ProjectFactory;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Builder;
 
 class Project extends Model
 {
-    /** @use HasFactory<\Database\Factories\ProjectFactory> */
+    /** @use HasFactory<ProjectFactory> */
     use HasFactory;
 
     protected $fillable = [
@@ -35,7 +36,7 @@ class Project extends Model
 
     public function scopeSearch(Builder $query, ?string $term): Builder
     {
-        return $query->when($term, fn($q) => $q->where(function ($q) use ($term) {
+        return $query->when($term, fn ($q) => $q->where(function ($q) use ($term) {
             $q->where('client_name', 'like', "%{$term}%")
                 ->orWhere('project_name', 'like', "%{$term}%");
         }));

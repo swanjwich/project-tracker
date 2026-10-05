@@ -26,21 +26,21 @@ class StoreProjectRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'client_name'  => ['required', 'string', 'max:255'],
+            'client_name' => ['required', 'string', 'max:255'],
             'project_name' => ['required', 'string', 'max:255'],
-            'description'  => ['nullable', 'string'],
-            'status'       => ['required', Rule::enum(ProjectStatus::class)],
-            'priority'     => ['required', Rule::enum(ProjectPriority::class)],
-            'start_date'   => ['nullable', 'date'],
-            'due_date'     => ['nullable', 'date', 'after_or_equal:start_date'],
+            'description' => ['nullable', 'string'],
+            'status' => ['required', Rule::enum(ProjectStatus::class)],
+            'priority' => ['required', Rule::enum(ProjectPriority::class)],
+            'start_date' => ['nullable', 'date'],
+            'due_date' => ['nullable', 'date', 'after_or_equal:start_date'],
         ];
     }
 
     public function messages(): array
     {
         return [
-            'status'                  => 'Status must be one of: Planning, In Progress, On Hold, Completed.',
-            'priority'                => 'Priority must be one of: Low, Medium, High.',
+            'status' => 'Status must be one of: Planning, In Progress, On Hold, Completed.',
+            'priority' => 'Priority must be one of: Low, Medium, High.',
             'due_date.after_or_equal' => 'Due date cannot be earlier than start date.',
         ];
     }

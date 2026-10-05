@@ -2,7 +2,7 @@
 
 namespace App\Enums;
 
-enum ProjectPriority : string
+enum ProjectPriority: string
 {
     case Low = 'Low';
     case Medium = 'Medium';
