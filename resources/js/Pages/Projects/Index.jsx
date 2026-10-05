@@ -5,6 +5,7 @@ import ProjectFormModal from '@/Components/Projects/ProjectFormModal';
 import ProjectTable from '@/Components/Projects/ProjectTable';
 import ProjectToolbar, { defaultFilters, hasActiveFilters } from '@/Components/Projects/ProjectToolbar';
 import SummaryCards from '@/Components/Projects/SummaryCards';
+import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { getProjects } from '@/api/projects';
 import { Head } from '@inertiajs/react';
 import { useCallback, useEffect, useRef, useState } from 'react';
@@ -108,11 +109,9 @@ export default function Index({ statuses, priorities }) {
     const firstLoad = loading && counts === null;
 
     return (
-        <div className="min-h-screen bg-gray-100">
-            <Head title="Projects" />
-
-            <header className="bg-white shadow-sm">
-                <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-4 px-4 py-5 sm:px-6 lg:px-8">
+        <AuthenticatedLayout
+            header={
+                <div className="flex flex-wrap items-center justify-between gap-4">
                     <div>
                         <h1 className="text-xl font-semibold text-gray-900">Client Projects</h1>
                         <p className="text-sm text-gray-500">
@@ -121,9 +120,11 @@ export default function Index({ statuses, priorities }) {
                     </div>
                     <PrimaryButton onClick={openCreate}>New project</PrimaryButton>
                 </div>
-            </header>
+            }
+        >
+            <Head title="Projects" />
 
-            <main className="mx-auto max-w-7xl space-y-6 px-4 py-8 sm:px-6 lg:px-8">
+            <div className="mx-auto max-w-7xl space-y-6 px-4 py-8 sm:px-6 lg:px-8">
                 <SummaryCards counts={counts} filters={filters} onChange={setFilters} />
 
                 {notice && (
@@ -194,7 +195,7 @@ export default function Index({ statuses, priorities }) {
                         </div>
                     )}
                 </div>
-            </main>
+            </div>
 
             <ProjectFormModal
                 show={formOpen}
@@ -211,6 +212,6 @@ export default function Index({ statuses, priorities }) {
                 onClose={() => setDeleteOpen(false)}
                 onDeleted={handleDeleted}
             />
-        </div>
+        </AuthenticatedLayout>
     );
 }

@@ -5,6 +5,16 @@ const client = axios.create({
     headers: { Accept: 'application/json' },
 });
 
+// Session expired (401) or CSRF token stale (419): reload, and the auth middleware
+// sends the user to the login page, then back here after they sign in.
+client.interceptors.response.use(undefined, (error) => {
+    if ([401, 419].includes(error.response?.status)) {
+        window.location.reload();
+    }
+
+    return Promise.reject(error);
+});
+
 export const getProjects = (params = {}) =>
     client.get('/projects', {params}).then((res) => res.data);
 
